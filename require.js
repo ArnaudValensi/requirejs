@@ -1266,6 +1266,14 @@ var requirejs, require, define;
                     }
                 }
 
+                //Make sure the alternateBaseUrl ends in a slash.
+                if (cfg.alternateBaseUrl) {
+                    if (cfg.alternateBaseUrl
+                            .charAt(cfg.alternateBaseUrl.length - 1) !== '/') {
+                        cfg.alternateBaseUrl += '/';
+                    }
+                }
+
                 //Save off the paths since they require special processing,
                 //they are additive.
                 var shim = config.shim,
@@ -1592,7 +1600,7 @@ var requirejs, require, define;
              */
             nameToUrl: function (moduleName, ext, skipExt) {
                 var paths, syms, i, parentModule, url,
-                    parentPath, bundleId,
+                    parentPath, bundleId, baseUrl,
                     pkgMain = getOwn(config.pkgs, moduleName);
 
                 if (pkgMain) {
@@ -1637,10 +1645,17 @@ var requirejs, require, define;
                         }
                     }
 
+                    if (config.alternateBaseUrl && config.alternateModules &&
+                        config.alternateModules.indexOf(moduleName) > -1) {
+                            baseUrl = config.alternateBaseUrl;
+                    } else {
+                        baseUrl = config.baseUrl;
+                    }
+
                     //Join the path parts together, then figure out if baseUrl is needed.
                     url = syms.join('/');
                     url += (ext || (/^data\:|\?/.test(url) || skipExt ? '' : '.js'));
-                    url = (url.charAt(0) === '/' || url.match(/^[\w\+\.\-]+:/) ? '' : config.baseUrl) + url;
+                    url = (url.charAt(0) === '/' || url.match(/^[\w\+\.\-]+:/) ? '' : baseUrl) + url;
                 }
 
                 return config.urlArgs ? url +
