@@ -1645,8 +1645,12 @@ var requirejs, require, define;
                         }
                     }
 
-                    if (config.alternateBaseUrl && config.alternateModules &&
-                        config.alternateModules.indexOf(moduleName) > -1) {
+                    if (skipExt &&
+                        config.alternateBaseUrl &&
+                        config.alternateModules &&
+                        config.alternateModules.indexOf(
+                            (ext === '.html') ? moduleName + ext : moduleName) > -1)
+                    {
                             baseUrl = config.alternateBaseUrl;
                     } else {
                         baseUrl = config.baseUrl;
